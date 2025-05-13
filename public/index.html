@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ thống Quản lý Sinh viên - Đại học Duy Tân</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <h1>Trường Đào tạo Quốc tế - Đại học Duy Tân</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#" class="active">Trang chủ</a></li>
+                    <li><a href="#add-student">Thêm sinh viên</a></li>
+                    <li><a href="#student-list">Danh sách sinh viên</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="container">
+                <h2>Hệ thống Quản lý Thông tin Sinh viên</h2>
+                <p>Quản lý thông tin sinh viên Trường Đào tạo Quốc tế - Đại học Duy Tân</p>
+            </div>
+        </section>
+
+        <section id="add-student" class="form-section">
+            <div class="container">
+                <h2>Thêm Thông tin Sinh viên</h2>
+                <form id="student-form">
+                    <div class="form-group">
+                        <label for="student_id">Mã sinh viên:</label>
+                        <input type="text" id="student_id" name="student_id" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="full_name">Họ và tên:</label>
+                        <input type="text" id="full_name" name="full_name" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="date_of_birth">Ngày sinh:</label>
+                        <input type="date" id="date_of_birth" name="date_of_birth" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Giới tính:</label>
+                        <div class="radio-group">
+                            <input type="radio" id="male" name="gender" value="Nam" required>
+                            <label for="male">Nam</label>
+                            
+                            <input type="radio" id="female" name="gender" value="Nữ">
+                            <label for="female">Nữ</label>
+                            
+                            <input type="radio" id="other" name="gender" value="Khác">
+                            <label for="other">Khác</label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">Email:</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="phone">Số điện thoại:</label>
+                        <input type="tel" id="phone" name="phone" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="address">Địa chỉ:</label>
+                        <textarea id="address" name="address" required></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="major">Ngành học:</label>
+                        <select id="major" name="major" required>
+                            <option value="">-- Chọn ngành học --</option>
+                            <!-- Các option sẽ được thêm bằng JavaScript -->
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="class_name">Lớp:</label>
+                        <input type="text" id="class_name" name="class_name" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="enrollment_year">Năm nhập học:</label>
+                        <input type="number" id="enrollment_year" name="enrollment_year" min="2000" max="2030" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="gpa">Điểm trung bình:</label>
+                        <input type="number" id="gpa" name="gpa" min="0" max="4" step="0.01">
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Lưu thông tin</button>
+                        <button type="reset" class="btn btn-secondary">Xóa form</button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <section id="student-list" class="list-section">
+            <div class="container">
+                <h2>Danh sách Sinh viên</h2>
+                
+                <div class="search-bar">
+                    <input type="text" id="search-input" placeholder="Tìm kiếm sinh viên...">
+                    <button id="search-btn" class="btn">Tìm kiếm</button>
+                </div>
+                
+                <div class="table-container">
+                    <table id="students-table">
+                        <thead>
+                            <tr>
+                                <th>Mã SV</th>
+                                <th>Họ và tên</th>
+                                <th>Ngày sinh</th>
+                                <th>Giới tính</th>
+                                <th>Ngành học</th>
+                                <th>Lớp</th>
+                                <th>Điểm TB</th>
+                                <th>Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody id="students-list">
+                            <!-- Dữ liệu sinh viên sẽ được thêm bằng JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div id="pagination" class="pagination">
+                    <!-- Phân trang sẽ được thêm bằng JavaScript -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Trường Đào tạo Quốc tế - Đại học Duy Tân. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Modal xem chi tiết sinh viên -->
+    <div id="student-detail-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Thông tin chi tiết sinh viên</h2>
+            <div id="student-detail-content">
+                <!-- Nội dung chi tiết sinh viên sẽ được thêm bằng JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal chỉnh sửa sinh viên -->
+    <div id="edit-student-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Chỉnh sửa thông tin sinh viên</h2>
+            <form id="edit-student-form">
+                <!-- Form chỉnh sửa sẽ được thêm bằng JavaScript -->
+            </form>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+</body>
+</html>
