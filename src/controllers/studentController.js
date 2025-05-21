@@ -32,21 +32,11 @@ export async function getStudentById(req, res) {
 export async function createStudent(req, res) {
   try {
     const studentData = req.body
+    console.log("Received student data:", studentData) // Debug: Log dữ liệu nhận được
 
-    // Kiểm tra dữ liệu đầu vào
-    if (
-      !studentData.student_id ||
-      !studentData.full_name ||
-      !studentData.date_of_birth ||
-      !studentData.gender ||
-      !studentData.email ||
-      !studentData.phone ||
-      !studentData.address ||
-      !studentData.major ||
-      !studentData.class_name ||
-      !studentData.enrollment_year
-    ) {
-      return res.status(400).json({ message: "Thiếu thông tin bắt buộc" })
+    // Kiểm tra dữ liệu đầu vào cơ bản
+    if (!studentData.student_id || !studentData.full_name || !studentData.gender) {
+      return res.status(400).json({ message: "Thiếu thông tin cơ bản: mã sinh viên, họ tên hoặc giới tính" })
     }
 
     // Kiểm tra mã sinh viên đã tồn tại chưa
@@ -55,11 +45,23 @@ export async function createStudent(req, res) {
       return res.status(400).json({ message: "Mã sinh viên đã tồn tại" })
     }
 
-    const newStudent = await Student.createStudent(studentData)
+    // Đảm bảo các trường còn thiếu được gán giá trị mặc định
+    const completeStudentData = {
+      ...studentData,
+      email: studentData.email || `${studentData.student_id}@duytan.edu.vn`,
+      phone: studentData.phone || "",
+      address: studentData.address || "",
+      major: studentData.major || "Chưa xác định",
+      class_name: studentData.class_name || "Chưa xác định",
+      enrollment_year: studentData.enrollment_year || new Date().getFullYear(),
+      gpa: studentData.gpa || null,
+    }
+
+    const newStudent = await Student.createStudent(completeStudentData)
     res.status(201).json(newStudent)
   } catch (error) {
     console.error("Error in createStudent:", error)
-    res.status(500).json({ message: "Lỗi server" })
+    res.status(500).json({ message: "Lỗi server: " + error.message })
   }
 }
 
@@ -68,6 +70,7 @@ export async function updateStudent(req, res) {
   try {
     const id = req.params.id
     const studentData = req.body
+    console.log("Updating student data:", studentData) // Debug: Log dữ liệu cập nhật
 
     // Kiểm tra sinh viên tồn tại
     const existingStudent = await Student.getStudentById(id)
@@ -75,20 +78,9 @@ export async function updateStudent(req, res) {
       return res.status(404).json({ message: "Không tìm thấy sinh viên" })
     }
 
-    // Kiểm tra dữ liệu đầu vào
-    if (
-      !studentData.student_id ||
-      !studentData.full_name ||
-      !studentData.date_of_birth ||
-      !studentData.gender ||
-      !studentData.email ||
-      !studentData.phone ||
-      !studentData.address ||
-      !studentData.major ||
-      !studentData.class_name ||
-      !studentData.enrollment_year
-    ) {
-      return res.status(400).json({ message: "Thiếu thông tin bắt buộc" })
+    // Kiểm tra dữ liệu đầu vào cơ bản
+    if (!studentData.student_id || !studentData.full_name || !studentData.gender) {
+      return res.status(400).json({ message: "Thiếu thông tin cơ bản: mã sinh viên, họ tên hoặc giới tính" })
     }
 
     // Kiểm tra mã sinh viên đã tồn tại chưa (nếu thay đổi)
@@ -99,11 +91,18 @@ export async function updateStudent(req, res) {
       }
     }
 
-    const updatedStudent = await Student.updateStudent(id, studentData)
+    // Kết hợp dữ liệu hiện tại với dữ liệu mới
+    const completeStudentData = {
+      ...existingStudent,
+      ...studentData,
+      id: undefined, // Đảm bảo không ghi đè id
+    }
+
+    const updatedStudent = await Student.updateStudent(id, completeStudentData)
     res.status(200).json(updatedStudent)
   } catch (error) {
     console.error("Error in updateStudent:", error)
-    res.status(500).json({ message: "Lỗi server" })
+    res.status(500).json({ message: "Lỗi server: " + error.message })
   }
 }
 

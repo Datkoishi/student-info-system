@@ -32,27 +32,57 @@ async function getStudentByStudentId(studentId) {
 // Tạo sinh viên mới
 async function createStudent(studentData) {
   try {
-    const result = await query(
-      `INSERT INTO students 
-       (student_id, full_name, date_of_birth, gender, email, phone, address, major, class_name, enrollment_year, gpa) 
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      [
+    // Kiểm tra xem bảng có cột date_of_birth không
+    const tableInfo = await query("SHOW COLUMNS FROM students LIKE 'date_of_birth'")
+
+    let sql = ""
+    let params = []
+
+    if (tableInfo.length > 0) {
+      // Nếu cột date_of_birth tồn tại, thêm NULL vào
+      sql = `INSERT INTO students 
+             (student_id, full_name, date_of_birth, gender, email, phone, address, major, class_name, enrollment_year, gpa) 
+             VALUES (?, ?, NULL, ?, ?, ?, ?, ?, ?, ?, ?)`
+
+      params = [
         studentData.student_id,
         studentData.full_name,
-        studentData.date_of_birth,
         studentData.gender,
-        studentData.email,
-        studentData.phone,
-        studentData.address,
-        studentData.major,
-        studentData.class_name,
-        studentData.enrollment_year,
+        studentData.email || `${studentData.student_id}@duytan.edu.vn`,
+        studentData.phone || "",
+        studentData.address || "",
+        studentData.major || "Chưa xác định",
+        studentData.class_name || "Chưa xác định",
+        studentData.enrollment_year || new Date().getFullYear(),
         studentData.gpa || null,
-      ],
-    )
+      ]
+    } else {
+      // Nếu cột date_of_birth không tồn tại
+      sql = `INSERT INTO students 
+             (student_id, full_name, gender, email, phone, address, major, class_name, enrollment_year, gpa) 
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
 
+      params = [
+        studentData.student_id,
+        studentData.full_name,
+        studentData.gender,
+        studentData.email || `${studentData.student_id}@duytan.edu.vn`,
+        studentData.phone || "",
+        studentData.address || "",
+        studentData.major || "Chưa xác định",
+        studentData.class_name || "Chưa xác định",
+        studentData.enrollment_year || new Date().getFullYear(),
+        studentData.gpa || null,
+      ]
+    }
+
+    console.log("SQL:", sql)
+    console.log("Params:", params)
+
+    const result = await query(sql, params)
     return { id: result.insertId, ...studentData }
   } catch (error) {
+    console.error("Error in createStudent:", error)
     throw error
   }
 }
@@ -60,30 +90,63 @@ async function createStudent(studentData) {
 // Cập nhật sinh viên
 async function updateStudent(id, studentData) {
   try {
-    await query(
-      `UPDATE students 
-       SET student_id = ?, full_name = ?, date_of_birth = ?, gender = ?, 
-           email = ?, phone = ?, address = ?, major = ?, class_name = ?, 
-           enrollment_year = ?, gpa = ?, updated_at = CURRENT_TIMESTAMP
-       WHERE id = ?`,
-      [
+    // Kiểm tra xem bảng có cột date_of_birth không
+    const tableInfo = await query("SHOW COLUMNS FROM students LIKE 'date_of_birth'")
+
+    let sql = ""
+    let params = []
+
+    if (tableInfo.length > 0) {
+      // Nếu cột date_of_birth tồn tại
+      sql = `UPDATE students 
+             SET student_id = ?, full_name = ?, date_of_birth = NULL, gender = ?, 
+                 email = ?, phone = ?, address = ?, major = ?, class_name = ?, 
+                 enrollment_year = ?, gpa = ?, updated_at = CURRENT_TIMESTAMP
+             WHERE id = ?`
+
+      params = [
         studentData.student_id,
         studentData.full_name,
-        studentData.date_of_birth,
         studentData.gender,
-        studentData.email,
-        studentData.phone,
-        studentData.address,
-        studentData.major,
-        studentData.class_name,
-        studentData.enrollment_year,
+        studentData.email || `${studentData.student_id}@duytan.edu.vn`,
+        studentData.phone || "",
+        studentData.address || "",
+        studentData.major || "Chưa xác định",
+        studentData.class_name || "Chưa xác định",
+        studentData.enrollment_year || new Date().getFullYear(),
         studentData.gpa || null,
         id,
-      ],
-    )
+      ]
+    } else {
+      // Nếu cột date_of_birth không tồn tại
+      sql = `UPDATE students 
+             SET student_id = ?, full_name = ?, gender = ?, 
+                 email = ?, phone = ?, address = ?, major = ?, class_name = ?, 
+                 enrollment_year = ?, gpa = ?, updated_at = CURRENT_TIMESTAMP
+             WHERE id = ?`
 
+      params = [
+        studentData.student_id,
+        studentData.full_name,
+        studentData.gender,
+        studentData.email || `${studentData.student_id}@duytan.edu.vn`,
+        studentData.phone || "",
+        studentData.address || "",
+        studentData.major || "Chưa xác định",
+        studentData.class_name || "Chưa xác định",
+        studentData.enrollment_year || new Date().getFullYear(),
+        studentData.gpa || null,
+        id,
+      ]
+    }
+
+    console.log("Update SQL:", sql)
+    console.log("Update Params:", params)
+
+    await query(sql, params)
     return { id, ...studentData }
   } catch (error) {
+    console.error("Error in updateStudent:", error)
     throw error
   }
 }
