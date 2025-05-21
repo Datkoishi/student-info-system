@@ -309,165 +309,143 @@ document.addEventListener("DOMContentLoaded", () => {
   
     // Hàm chỉnh sửa sinh viên
     function editStudent(studentId) {
-      fetch(`/api/students/${studentId}`)
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error("Lỗi khi lấy thông tin sinh viên")
-          }
-          return response.json()
-        })
-        .then((student) => {
-          const editForm = document.getElementById("edit-student-form")
-  
-          // Format ngày sinh cho input date
-          const dob = new Date(student.date_of_birth)
-          const formattedDob = dob.toISOString().split("T")[0]
-  
-          editForm.innerHTML = `
-                  <input type="hidden" name="id" value="${student.id}">
-                  
-                  <div class="form-group">
-                      <label for="edit_student_id">Mã sinh viên:</label>
-                      <input type="text" id="edit_student_id" name="student_id" value="${student.student_id}" required>
-                  </div>
-                  
-                  <div class="form-group">
-                      <label for="edit_full_name">Họ và tên:</label>
-                      <input type="text" id="edit_full_name" name="full_name" value="${student.full_name}" required>
-                  </div>
-                  
-                  <div class="form-group">
-                      <label for="edit_date_of_birth">Ngày sinh:</label>
-                      <input type="date" id="edit_date_of_birth" name="date_of_birth" value="${formattedDob}" required>
-                  </div>
-                  
-                  <div class="form-group">
-                      <label>Giới tính:</label>
-                      <div class="radio-group">
-                          <input type="radio" id="edit_male" name="gender" value="Nam" ${student.gender === "Nam" ? "checked" : ""} required>
-                          <label for="edit_male">Nam</label>
-                          
-                          <input type="radio" id="edit_female" name="gender" value="Nữ" ${student.gender === "Nữ" ? "checked" : ""}>
-                          <label for="edit_female">Nữ</label>
-                          
-                          <input type="radio" id="edit_other" name="gender" value="Khác" ${student.gender === "Khác" ? "checked" : ""}>
-                          <label for="edit_other">Khác</label>
-                      </div>
-                  </div>
-                  
-                  <div class="form-group">
-                      <label for="edit_email">Email:</label>
-                      <input type="email" id="edit_email" name="email" value="${student.email}" required>
-                  </div>
-                  
-                  <div class="form-group">
-                      <label for="edit_phone">Số điện thoại:</label>
-                      <input type="tel" id="edit_phone" name="phone" value="${student.phone}" required>
-                  </div>
-                  
-                  <div class="form-group">
-                      <label for="edit_address">Địa chỉ:</label>
-                      <textarea id="edit_address" name="address" required>${student.address}</textarea>
-                  </div>
-                  
-                  <div class="form-group">
-                      <label for="edit_major">Ngành học:</label>
-                      <select id="edit_major" name="major" required>
-                          <option value="">-- Chọn ngành học --</option>
-                          ${majors.map((major) => `<option value="${major.name}" ${student.major === major.name ? "selected" : ""}>${major.name} (${major.department})</option>`).join("")}
-                      </select>
-                  </div>
-                  
-                  <div class="form-group">
-                      <label for="edit_class_name">Lớp:</label>
-                      <input type="text" id="edit_class_name" name="class_name" value="${student.class_name}" required>
-                  </div>
-                  
-                  <div class="form-group">
-                      <label for="edit_enrollment_year">Năm nhập học:</label>
-                      <input type="number" id="edit_enrollment_year" name="enrollment_year" min="2000" max="2030" value="${student.enrollment_year}" required>
-                  </div>
-                  
-                  <div class="form-group">
-                      <label for="edit_gpa">Điểm trung bình:</label>
-                      <input type="number" id="edit_gpa" name="gpa" min="0" max="4" step="0.01" value="${student.gpa || ""}">
-                  </div>
-                  
-                  <div class="form-actions">
-                      <button type="submit" class="btn btn-primary">Cập nhật</button>
-                      <button type="button" class="btn btn-secondary close-modal">Hủy</button>
-                  </div>
-              `
-  
-          // Thêm event listener cho form chỉnh sửa
-          editForm.addEventListener("submit", function (e) {
-            e.preventDefault()
-            updateStudent(this)
+        fetch(`/api/students/${studentId}`)
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Lỗi khi lấy thông tin sinh viên")
+            }
+            return response.json()
           })
-  
-          // Thêm event listener cho nút hủy
-          editForm.querySelector(".close-modal").addEventListener("click", () => {
-            editStudentModal.style.display = "none"
+          .then((student) => {
+            const editForm = document.getElementById("edit-student-form")
+    
+            // Format ngày sinh cho input date
+            const dob = new Date(student.date_of_birth)
+            const formattedDob = dob.toISOString().split("T")[0]
+    
+            editForm.innerHTML = `
+                    <input type="hidden" name="id" value="${student.id}">
+                    
+                    <div class="form-group">
+                        <label for="edit_student_id">Mã sinh viên:</label>
+                        <input type="text" id="edit_student_id" name="student_id" value="${student.student_id}" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="edit_full_name">Họ và tên:</label>
+                        <input type="text" id="edit_full_name" name="full_name" value="${student.full_name}" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="edit_date_of_birth">Ngày sinh:</label>
+                        <input type="date" id="edit_date_of_birth" name="date_of_birth" value="${formattedDob}" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Giới tính:</label>
+                        <div class="radio-group">
+                            <input type="radio" id="edit_male" name="gender" value="Nam" ${student.gender === "Nam" ? "checked" : ""} required>
+                            <label for="edit_male">Nam</label>
+                            
+                            <input type="radio" id="edit_female" name="gender" value="Nữ" ${student.gender === "Nữ" ? "checked" : ""}>
+                            <label for="edit_female">Nữ</label>
+                            
+                            <input type="radio" id="edit_other" name="gender" value="Khác" ${student.gender === "Khác" ? "checked" : ""}>
+                            <label for="edit_other">Khác</label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="edit_email">Email:</label>
+                        <input type="email" id="edit_email" name="email" value="${student.email}" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="edit_phone">Số điện thoại:</label>
+                        <input type="tel" id="edit_phone" name="phone" value="${student.phone}" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="edit_address">Địa chỉ:</label>
+                        <textarea id="edit_address" name="address" required>${student.address}</textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="edit_major">Ngành học:</label>
+                        <select id="edit_major" name="major" required>
+                            <option value="">-- Chọn ngành học --</option>
+                            ${majors.map((major) => `<option value="${major.name}" ${student.major === major.name ? "selected" : ""}>${major.name} (${major.department})</option>`).join("")}
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="edit_class_name">Lớp:</label>
+                        <input type="text" id="edit_class_name" name="class_name" value="${student.class_name}" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="edit_enrollment_year">Năm nhập học:</label>
+                        <input type="number" id="edit_enrollment_year" name="enrollment_year" min="2000" max="2030" value="${student.enrollment_year}" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="edit_gpa">Điểm trung bình:</label>
+                        <input type="number" id="edit_gpa" name="gpa" min="0" max="4" step="0.01" value="${student.gpa || ""}">
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Cập nhật</button>
+                        <button type="button" class="btn btn-secondary close-modal">Hủy</button>
+                    </div>
+                `
+    
+            // Thêm event listener cho form chỉnh sửa
+            editForm.addEventListener("submit", function (e) {
+              e.preventDefault()
+              updateStudent(this)
+            })
+    
+            // Thêm event listener cho nút hủy
+            editForm.querySelector(".close-modal").addEventListener("click", () => {
+              editStudentModal.style.display = "none"
+            })
+    
+            editStudentModal.style.display = "block"
           })
-  
-          editStudentModal.style.display = "block"
-        })
-        .catch((error) => {
-          console.error("Error:", error)
-          alert("Đã xảy ra lỗi: " + error.message)
-        })
-    }
-  
-    // Hàm cập nhật thông tin sinh viên
-    function updateStudent(form) {
-      const formData = new FormData(form)
-      const studentData = {}
-      const studentId = formData.get("id")
-  
-      formData.forEach((value, key) => {
-        if (key !== "id") {
-          studentData[key] = value
-        }
-      })
-  
-      fetch(`/api/students/${studentId}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(studentData),
-      })
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error("Lỗi khi cập nhật sinh viên")
+          .catch((error) => {
+            console.error("Error:", error)
+            alert("Đã xảy ra lỗi: " + error.message)
+          })
+      }
+    
+      // Hàm cập nhật thông tin sinh viên
+      function updateStudent(form) {
+        const formData = new FormData(form)
+        const studentData = {}
+        const studentId = formData.get("id")
+    
+        formData.forEach((value, key) => {
+          if (key !== "id") {
+            studentData[key] = value
           }
-          return response.json()
         })
-        .then((data) => {
-          alert("Cập nhật sinh viên thành công!")
-          editStudentModal.style.display = "none"
-          fetchStudents() // Cập nhật lại danh sách sinh viên
-        })
-        .catch((error) => {
-          console.error("Error:", error)
-          alert("Đã xảy ra lỗi: " + error.message)
-        })
-    }
-  
-    // Hàm xóa sinh viên
-    function deleteStudent(studentId) {
-      if (confirm("Bạn có chắc chắn muốn xóa sinh viên này?")) {
+    
         fetch(`/api/students/${studentId}`, {
-          method: "DELETE",
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(studentData),
         })
           .then((response) => {
             if (!response.ok) {
-              throw new Error("Lỗi khi xóa sinh viên")
+              throw new Error("Lỗi khi cập nhật sinh viên")
             }
             return response.json()
           })
           .then((data) => {
-            alert("Xóa sinh viên thành công!")
+            alert("Cập nhật sinh viên thành công!")
+            editStudentModal.style.display = "none"
             fetchStudents() // Cập nhật lại danh sách sinh viên
           })
           .catch((error) => {
@@ -475,6 +453,28 @@ document.addEventListener("DOMContentLoaded", () => {
             alert("Đã xảy ra lỗi: " + error.message)
           })
       }
-    }
-  })
-  
+    
+      // Hàm xóa sinh viên
+      function deleteStudent(studentId) {
+        if (confirm("Bạn có chắc chắn muốn xóa sinh viên này?")) {
+          fetch(`/api/students/${studentId}`, {
+            method: "DELETE",
+          })
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error("Lỗi khi xóa sinh viên")
+              }
+              return response.json()
+            })
+            .then((data) => {
+              alert("Xóa sinh viên thành công!")
+              fetchStudents() // Cập nhật lại danh sách sinh viên
+            })
+            .catch((error) => {
+              console.error("Error:", error)
+              alert("Đã xảy ra lỗi: " + error.message)
+            })
+        }
+      }
+    })
+    
